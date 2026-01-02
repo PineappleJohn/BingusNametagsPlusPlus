@@ -94,12 +94,6 @@ public static class UIManager
 						new Rect(WindowStartX, WindowStartY + 25, 70, 20),
 						new GUIContent("Display", "Change how nametags are displayed")
 					);
-
-                    Config.ShowPersonalTag = GUI.Toggle(
-                        new Rect(WindowStartX, WindowStartY + 50, 150, 20),
-                        Config.ShowPersonalTag,
-                        new GUIContent("Show Personal Nametag", "Display your own nametag")
-                    );
                 }
 
 				break;
