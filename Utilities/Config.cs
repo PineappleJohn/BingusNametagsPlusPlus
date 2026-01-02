@@ -32,38 +32,40 @@ public static class Config
 
 	public static void SavePrefs()
 	{
-		PlayerPrefs.SetInt("aquabytz_nametags_FPE", ShowInFirstPerson ? 1 : 0);
-		PlayerPrefs.SetInt("aquabytz_nametags_TPE", ShowInThirdPerson ? 1 : 0);
+		PlayerPrefs.SetInt("BG++_FPE", ShowInFirstPerson ? 1 : 0);
+		PlayerPrefs.SetInt("BG++_TPE", ShowInThirdPerson ? 1 : 0);
 
-		PlayerPrefs.SetInt("aquabytz_nametags_NameEnabled", ShowingName ? 1 : 0);
+		PlayerPrefs.SetInt("BG++_NameEnabled", ShowingName ? 1 : 0);
 
-		PlayerPrefs.SetInt("aquabytz_nametags_AllIcons", GlobalIconsEnabled ? 1 : 0);
-		PlayerPrefs.SetInt("aquabytz_nametags_PlatformEnabled", ShowingPlatform ? 1 : 0);
-		PlayerPrefs.SetInt("aquabytz_nametags_ShowPlayerIcons", UserCustomIcons ? 1 : 0);
+		PlayerPrefs.SetInt("BG++_AllIcons", GlobalIconsEnabled ? 1 : 0);
+		PlayerPrefs.SetInt("BG++_PlatformEnabled", ShowingPlatform ? 1 : 0);
+		PlayerPrefs.SetInt("BG++_ShowPlayerIcons", UserCustomIcons ? 1 : 0);
 
-		PlayerPrefs.SetInt("aquabytz_nametags_DoNetworking", CustomNametags ? 1 : 0);
-		PlayerPrefs.SetString("aquabytz_nametags_NetworkNametagColor", NametagColor);
+		PlayerPrefs.SetInt("BG++_DoNetworking", CustomNametags ? 1 : 0);
+        PlayerPrefs.SetFloat("BG++_DoNetworkingSelf", Networking.DoNetworking ? 1 : 0);
+        PlayerPrefs.SetString("BG++_NetworkNametagColor", NametagColor);
 
-		PlayerPrefs.SetFloat("aquabytz_nametags_NametagScale", NametagScale);
-		PlayerPrefs.SetFloat("aquabytz_nametags_NametagY", NametagYOffset);
+		PlayerPrefs.SetFloat("BG++_NametagScale", NametagScale);
+		PlayerPrefs.SetFloat("BG++_NametagY", NametagYOffset);
 	}
 
 	public static void LoadPrefs()
 	{
-		ShowInFirstPerson = PlayerPrefs.GetInt("aquabytz_nametags_FPE", 1) == 1;
-		ShowInThirdPerson = PlayerPrefs.GetInt("aquabytz_nametags_TPE", 1) == 1;
+		ShowInFirstPerson = PlayerPrefs.GetInt("BG++_FPE", 1) == 1;
+		ShowInThirdPerson = PlayerPrefs.GetInt("BG++_TPE", 1) == 1;
 
-		ShowingName = PlayerPrefs.GetInt("aquabytz_nametags_NameEnabled", 1) == 1;
+		ShowingName = PlayerPrefs.GetInt("BG++_NameEnabled", 1) == 1;
 
-		GlobalIconsEnabled = PlayerPrefs.GetInt("aquabytz_nametags_AllIcons", 1) == 1;
-		ShowingPlatform = PlayerPrefs.GetInt("aquabytz_nametags_PlatformEnabled", 1) == 1;
-		UserCustomIcons = PlayerPrefs.GetInt("aquabytz_nametags_ShowPlayerIcons", 1) == 1;
+		GlobalIconsEnabled = PlayerPrefs.GetInt("BG++_AllIcons", 1) == 1;
+		ShowingPlatform = PlayerPrefs.GetInt("BG++_PlatformEnabled", 1) == 1;
+		UserCustomIcons = PlayerPrefs.GetInt("BG++_ShowPlayerIcons", 1) == 1;
 
-		CustomNametags = PlayerPrefs.GetInt("aquabytz_nametags_DoNetworking", 1) == 1;
-		NametagColor = PlayerPrefs.GetString("aquabytz_nametags_NetworkNametagColor", NametagColor);
+		Networking.DoNetworking = PlayerPrefs.GetInt("BG++_DoNetworkingSelf", 1) == 1;
+        CustomNametags = PlayerPrefs.GetInt("BG++_DoNetworking", 1) == 1;
+		NametagColor = PlayerPrefs.GetString("BG++_NetworkNametagColor", NametagColor);
 
-		NametagScale = PlayerPrefs.GetFloat("aquabytz_nametags_NametagScale", NametagScale);
-		NametagYOffset = PlayerPrefs.GetFloat("aquabytz_nametags_NametagY", NametagYOffset);
+		NametagScale = PlayerPrefs.GetFloat("BG++_NametagScale", NametagScale);
+		NametagYOffset = PlayerPrefs.GetFloat("BG++_NametagY", NametagYOffset);
 
 		var fontFile =
 			Directory.EnumerateFiles(Constants.AssemblyDirectory, "*.ttf", SearchOption.TopDirectoryOnly)

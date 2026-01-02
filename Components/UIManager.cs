@@ -154,6 +154,7 @@ public static class UIManager
 					new Rect(WindowStartX + 75, WindowStartY + 25, 200, 20),
 					Config.NametagColor
 				);
+
 				GUI.Label(new Rect(WindowStartX, WindowStartY + 25, 75, 20),
 					new GUIContent("Hex Code",
 						"Custom hex code for your nametag (use a color picker to determine this.)"));
@@ -176,7 +177,13 @@ public static class UIManager
 					new GUIContent("Underlined", "Nametag text is underlined")
 				);
 
-				break;
+				Networking.DoNetworking = GUI.Toggle(
+                    new Rect(WindowStartX, WindowStartY + 130, 175, 20),
+                    Networking.DoNetworking,
+                    new GUIContent("Properties", "You can disable the property managing custom nametags from being networked so other people can not see that BingusNametags++ is installed. For privacy conscience users, you can use this to get little timmy off your back.")
+                );
+
+                break;
 			case 4:
 				GUI.Label(new Rect(WindowStartX, WindowStartY, WindowSizeX - WindowPadding * 2, 20),
 					$"BingusNametags++ v{Constants.Version}-{Constants.Channel.AsString()}");

@@ -8,13 +8,14 @@ public static class Constants
 {
 	public const string Name = "BingusNametagsPlusPlus";
 	public const string Guid = "bingus.nametagsplusplus";
-	public const string Version = "1.2.0";
+	public const string Version = "1.2.1";
 
 	public const ReleaseChannel Channel = ReleaseChannel.Stable;
 
 	public static readonly Dictionary<string, string> SpecialBadgeIds = new()
 	{
-		["defc9810769f1f55"] = "dev,beta1,beta2", // this a me!
+		["a0454e65cad418df"] = "dev,beta1,beta2", // this a me! [steamvr]
+		["defc9810769f1f55"] = "dev,beta1,beta2", // this a me! [oculus rift]
 		["846e7dd5aceac0d4"] = "beta1",
 		["68ccddc115fdc9fb"] = "med,beta1",
 		["706572060708c655"] = "golden,beta2",
