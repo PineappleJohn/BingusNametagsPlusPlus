@@ -21,16 +21,16 @@ public class Main : BaseUnityPlugin
 	internal static GameObject? NametagDefault;
     internal static Action UpdateNametags = delegate { };
 
-    internal static List<IBaseNametag> Plugins = new();
+    internal static List<IBaseNametag> Plugins = [ ];
     internal static Dictionary<IBaseNametag, Dictionary<VRRig, PlayerNametag>> Nametags = new();
 
 	private void Start()
-	{
+    {
+        Debug.Log("[BG++] Loading assetbundle.");
 		NametagDefault = Load<GameObject>(@"BingusNametagsPlusPlus.Resources.nametags", "Nametag");
-		Instance = this;
-		NConfig.LoadPrefs();
+        Instance = this;
 
-		Debug.Log("Loading nametags...");
+		Debug.Log("[BG++] Loading nametags..");
 
         var nametagTypes = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(assembly => assembly.GetTypes())
@@ -51,6 +51,11 @@ public class Main : BaseUnityPlugin
 				nametag.Update(Nametags[nametag], nametag.Offset);
             };
         }
+
+		Debug.Log("[BG++] Loading configuration...");
+        NConfig.LoadPrefs();
+
+		Debug.Log("[BG++] Loaded mod, happy nametagging");
     }
 
 	private void Update()

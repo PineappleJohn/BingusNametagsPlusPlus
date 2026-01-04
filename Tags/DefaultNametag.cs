@@ -1,4 +1,5 @@
-﻿using BingusNametagsPlusPlus.Classes;
+﻿using System.Collections.Generic;
+using BingusNametagsPlusPlus.Classes;
 using BingusNametagsPlusPlus.Interfaces;
 using BingusNametagsPlusPlus.Utilities;
 
@@ -10,6 +11,7 @@ namespace BingusNametagsPlusPlus.Tags
         public string Description => "The default nametag provided by BingusNametags++. Includes platform icons and a nametag.";
         public string Author => "Bingus";
         public float Offset => 0f;
+        public List<string> Unsupported => [];
         public bool Enabled { get; set; } = true;
 
         private static string GetPlatformString(VRRig player)

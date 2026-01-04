@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using BingusNametagsPlusPlus.Interfaces;
 using BingusNametagsPlusPlus.Utilities;
 using UnityEngine;
@@ -33,11 +35,10 @@ public static class UIManager
 	private static readonly GUIContent[] Pages =
 	[
 		new("Nametag", "Nametag behaviour settings"),
-		new("Text", "Text display settings"),
 		new("Icons", "Change how icons behave"),
 		new("Network", "Change how your nametag looks to other people"),
-        new("Plugins", "Enable/disable all nametags"),
-        new("About", "About BingusNametags++")
+		new("Plugins", "Enable/disable all nametags"),
+		new("About", "About BingusNametags++")
 	];
 
 	private static int _pageSelected;
@@ -48,24 +49,52 @@ public static class UIManager
 	private static int WindowStartX => WindowX + WindowPadding;
 	private static int WindowStartY => WindowY + WindowPadding + 50;
 
+	private static BGWindowState WindowState = BGWindowState.Normal;
+
 	public static void Update()
 	{
 		if (Keyboard.current.rightShiftKey.wasPressedThisFrame)
 			_showingUI = !_showingUI;
 	}
 
-	public static void OnGUI()
+	private static void EnablePlugin(IBaseNametag plugin)
 	{
-		if (!_showingUI)
+		var allEnabledPlugins = Main.Plugins.Where(a => a.Enabled);
+		var allEnabledNames = allEnabledPlugins.Select(a => a.Name);
+		var unsupported = plugin.Unsupported.Where(unsupportedName => allEnabledNames.Contains(unsupportedName));
+
+		if (!unsupported.Any())
+		{
+			plugin.Enabled = true;
 			return;
+		}
 
-		// Window
-		GUI.Box(new Rect(WindowX, WindowY, WindowSizeX, WindowSizeY), "");
-		GUI.Label(
-			new Rect(WindowX + ((WindowSizeX / 2 - (WindowSizeX % 2)) - 60), WindowY + 5, 120, 20),
-			"BingusNametags++"
+		var unsupportedList = "";
+		unsupported.ForEach(unsupportedPlugin => unsupportedList += (unsupportedList == "" ? unsupportedPlugin : $", {unsupportedPlugin}"));
+
+		Ask(
+			$"The nametag you want to enable is incompatable with the following <i>enabled</i> nametags:\n\n{unsupportedList}\n\nAre you sure you want to enable this nametag?",
+			[ "Yes", "No" ],
+			(string answer) =>
+			{
+				if (answer == "No")
+					return;
+
+				plugin.Enabled = true;
+
+				foreach (var plugin in allEnabledPlugins.Where(a => unsupported.Contains(a.Name)))
+					plugin.Enabled = false;
+			}
 		);
+	}
 
+	private static void DisablePlugin(IBaseNametag plugin)
+	{
+		plugin.Enabled = false;
+	}
+
+	public static void DrawNormal()
+	{
 		_pageSelected = GUI.Toolbar(new Rect(WindowX + 5, WindowY + 30, WindowSizeX - WindowPadding, 20), _pageSelected,
 			Pages);
 
@@ -84,46 +113,44 @@ public static class UIManager
 						new Rect(WindowStartX + 70, WindowStartY + 25, 100, 20),
 						Config.ShowInFirstPerson,
 						new GUIContent("First Person", "Display the nametag in VR (first person)")
-                     );
+					 );
 
-                    Config.ShowInThirdPerson = GUI.Toggle(
-                        new Rect(WindowStartX + 175, WindowStartY + 25, 100, 20),
-                        Config.ShowInThirdPerson,
-                        new GUIContent("Third Person", "Display the nametag on your PC (third person)")
+					Config.ShowInThirdPerson = GUI.Toggle(
+						new Rect(WindowStartX + 175, WindowStartY + 25, 100, 20),
+						Config.ShowInThirdPerson,
+						new GUIContent("Third Person", "Display the nametag on your PC (third person)")
+					);
+
+                    GUI.Label(
+                        new Rect(WindowStartX, WindowStartY + 25, 70, 20),
+                        new GUIContent("Display", "Change how nametags are displayed")
                     );
 
+                    Config.NametagScale = GUI.HorizontalSlider(new Rect(WindowStartX + 85, WindowStartY + 50, WindowSizeX - 140, 20),
+						Config.NametagScale, 2f, 12f);
+
+					Config.NametagYOffset =
+						GUI.HorizontalSlider(new Rect(WindowStartX + 85, WindowStartY + 75, WindowSizeX - 140, 20),
+							Config.NametagYOffset, 0.5f, 5f);
+
+					// Labels
 					GUI.Label(
-						new Rect(WindowStartX, WindowStartY + 25, 70, 20),
-						new GUIContent("Display", "Change how nametags are displayed")
+						new Rect(WindowStartX, WindowStartY + 45, 80, 20),
+						new GUIContent("Size", "Change how large the nametag text is")
 					);
-                }
+
+					GUI.Label(new Rect(WindowStartX + WindowSizeX - 50, WindowStartY + 45, 30, 20), $"{Config.NametagScale}");
+
+					GUI.Label(
+						new Rect(WindowStartX, WindowStartY + 70, 80, 20),
+						new GUIContent("Offset", "Change the Y axis offset of the nametag")
+					);
+
+					GUI.Label(new Rect(WindowStartX + WindowSizeX - 50, WindowStartY + 70, 30, 20), $"{Config.NametagYOffset}");
+				}
 
 				break;
 			case 1:
-				Config.NametagScale = GUI.HorizontalSlider(new Rect(WindowStartX + 70, WindowStartY + 5, 185, 20),
-					Config.NametagScale, 2f, 12f);
-
-				Config.NametagYOffset =
-					GUI.HorizontalSlider(new Rect(WindowStartX + 70, WindowStartY + 30, 185, 20),
-						Config.NametagYOffset, 0.5f, 5f);
-
-				// Labels
-				GUI.Label(
-					new Rect(WindowStartX, WindowStartY, 80, 20),
-					new GUIContent("Size", "Change how large the nametag text is")
-				);
-
-				GUI.Label(new Rect(WindowStartX + 260, WindowStartY, 30, 20), $"{Config.NametagScale}");
-
-				GUI.Label(
-					new Rect(WindowStartX, WindowStartY + 25, 80, 20),
-					new GUIContent("Offset", "Change the Y axis offset of the nametag")
-				);
-
-				GUI.Label(new Rect(WindowStartX + 260, WindowStartY + 25, 30, 20), $"{Config.NametagYOffset}");
-
-				break;
-			case 2:
 				Config.GlobalIconsEnabled = GUI.Toggle(
 					new Rect(WindowStartX, WindowStartY, 250, 20),
 					Config.GlobalIconsEnabled,
@@ -147,7 +174,7 @@ public static class UIManager
 				}
 
 				break;
-			case 3:
+			case 2:
 				Config.CustomNametags = GUI.Toggle(
 					new Rect(WindowStartX, WindowStartY, 175, 20),
 					Config.CustomNametags,
@@ -182,28 +209,33 @@ public static class UIManager
 				);
 
 				Networking.DoNetworking = GUI.Toggle(
-                    new Rect(WindowStartX, WindowStartY + 130, 175, 20),
-                    Networking.DoNetworking,
-                    new GUIContent("Properties", "You can disable the property managing custom nametags from being networked so other people can not see that BingusNametags++ is installed. For privacy conscience users, you can use this to get little timmy off your back.")
-                );
+					new Rect(WindowStartX, WindowStartY + 130, 175, 20),
+					Networking.DoNetworking,
+					new GUIContent("Properties", "You can disable the property managing custom nametags from being networked so other people can not see that BingusNametags++ is installed. For privacy conscience users, you can use this to get little timmy off your back.")
+				);
 
-                break;
-			case 4:
-                var startingIndex = WindowStartY;
+				break;
+			case 3:
+				var startingIndex = WindowStartY;
 
-                foreach (var plugin in Main.Plugins)
-                {
-                    plugin.Enabled = GUI.Toggle(
-                        new Rect(WindowStartX, startingIndex, 175, 20),
+				foreach (var plugin in Main.Plugins)
+				{
+					var currently = GUI.Toggle(
+						new Rect(WindowStartX, startingIndex, WindowSizeX - 20, 20),
 						plugin.Enabled,
-                        new GUIContent($"{plugin.Name} [{plugin.Author}]", plugin.Description)
-                    );
+						new GUIContent($"{plugin.Name} [by {plugin.Author}]", plugin.Description)
+					);
 
-                    startingIndex += 25;
-                }
+					if (currently != plugin.Enabled && plugin.Enabled)
+						DisablePlugin(plugin);
+					else if (currently != plugin.Enabled)
+						EnablePlugin(plugin);
 
-                break;
-			case 5:
+					startingIndex += 25;
+				}
+
+				break;
+			case 4:
 				GUI.Label(new Rect(WindowStartX, WindowStartY, WindowSizeX - WindowPadding * 2, 20),
 					$"BingusNametags++ v{Constants.Version}-{Constants.Channel.AsString()}");
 				GUI.Label(new Rect(WindowStartX, WindowStartY + 20, WindowSizeX - WindowPadding * 2, 20),
@@ -236,21 +268,78 @@ public static class UIManager
 
 		// Saving / other stuff like that
 		if (GUI.Button(
-			    new Rect(WindowStartX, WindowY + WindowSizeY - 25, 100, 20),
-			    new GUIContent("Refresh", "Save all settings, reload fonts and configuration settings")))
+				new Rect(WindowStartX, WindowY + WindowSizeY - 25, 100, 20),
+				new GUIContent("Refresh", "Save all settings, reload fonts and configuration settings")))
 		{
 			Config.SavePrefs();
 			Config.LoadPrefs();
 		}
 
 		if (GUI.Button(new Rect(WindowStartX + 105, WindowY + WindowSizeY - 25, 75, 20),
-			    new GUIContent("Apply",
-				    "Save the current nametags configuration (This is not required, changes are auto-saved upon exiting)")))
+				new GUIContent("Apply",
+					"Save the current nametags configuration (This is not required, changes are auto-saved upon exiting)")))
 			Config.SavePrefs();
+	}
+
+	private static string promptQuestion = "";
+	private static List<string> promptButtons = [ ];
+	private static Action<string> promptCallback = delegate { };
+
+	private static void DrawPrompt()
+	{
+		GUI.Label(
+			new Rect(WindowX + 10, WindowY + 30, WindowSizeX - 20, WindowSizeY - 60),
+			promptQuestion
+		);
+
+		var buttonIndex = 0;
+
+		foreach (var answerOption in promptButtons)
+		{
+			if (GUI.Button(new Rect(WindowStartX + (buttonIndex * 155), WindowY + WindowSizeY - 25, 150, 20), answerOption))
+			{
+				promptCallback(answerOption);
+				WindowState = BGWindowState.Normal;
+			}
+
+			buttonIndex++;
+		}
+	}
+
+	public static void Ask(string question, List<string> answers, Action<string> callback)
+	{
+		promptQuestion = question;
+		promptButtons = answers;
+		promptCallback = callback;
+		WindowState = BGWindowState.Prompt;
+	}
+
+	public static void OnGUI()
+	{
+		if (!_showingUI)
+			return;
+
+		// Window
+		GUI.Box(new Rect(WindowX, WindowY, WindowSizeX, WindowSizeY), "");
+		GUI.Label(
+			new Rect(WindowX + ((WindowSizeX / 2 - (WindowSizeX % 2)) - 60), WindowY + 5, 120, 20),
+			"BingusNametags++"
+		);
+
+		switch (WindowState)
+		{
+			default:
+			case BGWindowState.Normal:
+				DrawNormal();
+				break;
+			case BGWindowState.Prompt:
+				DrawPrompt();
+				break;
+		}
 
 		// X button
 		if (GUI.RepeatButton(new Rect(WindowX + WindowSizeX - 25, WindowY + 5, 20, 20),
-			    new GUIContent("X", "Close the window (press right shift to reopen)")))
+				new GUIContent("X", "Close the window (press right shift to reopen)")))
 			_showingUI = false;
 
 		// Tooltip display
@@ -263,5 +352,11 @@ public static class UIManager
 
 		// Reset it so the tooltip is gone when your mouse leaves an element
 		GUI.tooltip = "";
+	}
+
+	enum BGWindowState
+	{
+		Normal,
+		Prompt
 	}
 }

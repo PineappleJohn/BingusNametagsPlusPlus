@@ -33,6 +33,11 @@ namespace BingusNametagsPlusPlus.Interfaces
         public string Author { get; }
 
         /// <summary>
+        /// Any incompatabilities with other plugins by name. If any incompatable plugins are installed and enabled, the user will be prompted before enabling the mod.
+        /// </summary>
+        public List<string> Unsupported { get; }
+
+        /// <summary>
         /// The offset from the user's selected offset of your nametag. The default nametag is at offset 0f;
         /// </summary>
         public float Offset { get; }

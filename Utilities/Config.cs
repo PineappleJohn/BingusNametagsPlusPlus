@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -47,6 +48,9 @@ public static class Config
 
 		PlayerPrefs.SetFloat("BG++_NametagScale", NametagScale);
 		PlayerPrefs.SetFloat("BG++_NametagY", NametagYOffset);
+
+        var enabledPlugins = Main.Plugins.Where(tag => tag.Enabled).Select(tag => tag.Name);
+		PlayerPrefs.SetString("BG++_EnabledPlugins", string.Join("&", enabledPlugins));
 	}
 
 	public static void LoadPrefs()
@@ -66,6 +70,12 @@ public static class Config
 
 		NametagScale = PlayerPrefs.GetFloat("BG++_NametagScale", NametagScale);
 		NametagYOffset = PlayerPrefs.GetFloat("BG++_NametagY", NametagYOffset);
+
+        var enabledPluginsString = PlayerPrefs.GetString("BG++_EnabledPlugins", "Default");
+        var enabledPlugins = enabledPluginsString.Split("&");
+
+        foreach (var plugin in Main.Plugins)
+            plugin.Enabled = enabledPlugins.Contains(plugin.Name);
 
 		var fontFile =
 			Directory.EnumerateFiles(Constants.AssemblyDirectory, "*.ttf", SearchOption.TopDirectoryOnly)
