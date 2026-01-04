@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using BepInEx;
 using BingusNametagsPlusPlus.Classes;
 using BingusNametagsPlusPlus.Components;
@@ -55,7 +56,16 @@ public class Main : BaseUnityPlugin
 		Debug.Log("[BG++] Loading configuration...");
         NConfig.LoadPrefs();
 
-		Debug.Log("[BG++] Loaded mod, happy nametagging");
+        if (Constants.Channel != ReleaseChannel.Stable)
+        {
+            UIManager.Ask(
+                $"Note:\n\nThis is a {Constants.Channel.AsString()} release, not meant for regular users.\nIf you run into bugs while using this build, please report them to the Discord instead of the GitHub issue tracker.", 
+                ["Okay"],
+                (ans) => { }
+            );
+        }
+
+        Debug.Log("[BG++] Loaded mod, happy nametagging");
     }
 
 	private void Update()

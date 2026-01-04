@@ -19,6 +19,8 @@ public static class Config
 	public static bool UserCustomIcons = true;
 	public static bool GlobalIconsEnabled = true;
 
+    public static bool UseSanitizedNickName = false;
+
 	public static TMP_FontAsset? CustomFont;
 
 	public static float NametagScale = 5f;
@@ -37,8 +39,9 @@ public static class Config
 		PlayerPrefs.SetInt("BG++_TPE", ShowInThirdPerson ? 1 : 0);
 
         PlayerPrefs.SetInt("BG++_NameEnabled", ShowingName ? 1 : 0);
+        PlayerPrefs.SetFloat("BG++_SanitizeNicknames", UseSanitizedNickName ? 1 : 0);
 
-		PlayerPrefs.SetInt("BG++_AllIcons", GlobalIconsEnabled ? 1 : 0);
+        PlayerPrefs.SetInt("BG++_AllIcons", GlobalIconsEnabled ? 1 : 0);
 		PlayerPrefs.SetInt("BG++_PlatformEnabled", ShowingPlatform ? 1 : 0);
 		PlayerPrefs.SetInt("BG++_ShowPlayerIcons", UserCustomIcons ? 1 : 0);
 
@@ -59,8 +62,9 @@ public static class Config
 		ShowInThirdPerson = PlayerPrefs.GetInt("BG++_TPE", 1) == 1;
 
         ShowingName = PlayerPrefs.GetInt("BG++_NameEnabled", 1) == 1;
+        UseSanitizedNickName = PlayerPrefs.GetInt("BG++_SanitizeNicknames", 1) == 1;
 
-		GlobalIconsEnabled = PlayerPrefs.GetInt("BG++_AllIcons", 1) == 1;
+        GlobalIconsEnabled = PlayerPrefs.GetInt("BG++_AllIcons", 1) == 1;
 		ShowingPlatform = PlayerPrefs.GetInt("BG++_PlatformEnabled", 1) == 1;
 		UserCustomIcons = PlayerPrefs.GetInt("BG++_ShowPlayerIcons", 1) == 1;
 

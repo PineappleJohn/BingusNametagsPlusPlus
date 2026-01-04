@@ -126,12 +126,18 @@ public static class UIManager
                         new GUIContent("Display", "Change how nametags are displayed")
                     );
 
-                    Config.NametagScale = GUI.HorizontalSlider(new Rect(WindowStartX + 85, WindowStartY + 50, WindowSizeX - 140, 20),
+                    Config.NametagScale = GUI.HorizontalSlider(new Rect(WindowStartX + 90, WindowStartY + 50, WindowSizeX - 140, 20),
 						Config.NametagScale, 2f, 12f);
 
 					Config.NametagYOffset =
-						GUI.HorizontalSlider(new Rect(WindowStartX + 85, WindowStartY + 75, WindowSizeX - 140, 20),
+						GUI.HorizontalSlider(new Rect(WindowStartX + 90, WindowStartY + 75, WindowSizeX - 140, 20),
 							Config.NametagYOffset, 0.5f, 5f);
+
+                    Config.UseSanitizedNickName = GUI.Toggle(
+                        new Rect(WindowStartX, WindowStartY + 100, 200, 20),
+						Config.UseSanitizedNickName,
+						new GUIContent("Sanitize Nicknames", "Prevents invalid usernames from being displayed on nametags (eg. spaces, cuss words, etc.). This is the username displayed on the gorilla's chest.")
+                    );
 
 					// Labels
 					GUI.Label(
