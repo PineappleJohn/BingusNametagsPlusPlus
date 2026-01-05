@@ -1,6 +1,6 @@
-bin/
-obj/
-/packages/
-riderModule.iml
-/_ReSharper.Caches/
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
 /.vs
+/bin/Debug/netstandard2.1
